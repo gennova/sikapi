@@ -91,6 +91,8 @@ $this->view('template/js');
                     <th>Debit</th>
                     <th>Kredit</th>
                     <th>Saldo</th>
+                    <th>Update</th>
+                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -107,6 +109,8 @@ $this->view('template/js');
                     <td><?php echo $kas->Debet; ?></td>
                     <td><?php echo $kas->Kredit; ?></td>
                     <td><?php echo $kas->Saldo; ?></td>
+                    <td><a href="<?php echo base_url().'unit/kas/update_kas_unit_by_id/'.$kas->id_kas; ?>">UPDATE</a></td>
+                    <td><a href="<?php echo base_url().'unit/kas/delete_kas_unit_by_id/'.$kas->id_kas; ?>">DELETE</a></td>
                   </tr>
              <?php
              $i++;

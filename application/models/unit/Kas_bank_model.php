@@ -4,10 +4,17 @@ if(!defined('BASEPATH')) exit('No direct script allowed');
 class Kas_bank_model extends CI_Model{
 	function __Construct(){
 		parent::__Construct();
+		$this->load->model('unit/Kas_bank_model');
 	}
 
 	function add_data($data){
 		$this->db->insert('kas_bank',$data);
+		return;
+	}
+
+	function update_data($data,$id_kas){
+		$this->db->where('id_kas',$id_kas);
+		$this->db->update('kas_bank',$data);
 		return;
 	}
 
@@ -21,6 +28,14 @@ class Kas_bank_model extends CI_Model{
 		$this->db->where('id',$id_unit);
 		$this->db->select("*");
 		$query = $this->db->get('unit');
+		return $query->result();
+	}
+
+	function get_bank_kas_id_kas($id_kas_bank){
+		$this->db->limit(1);
+		$this->db->where('id_kas',$id_kas_bank);
+		$this->db->select("*");
+		$query = $this->db->get('kas_bank');
 		return $query->result();
 	}
 
@@ -61,6 +76,18 @@ class Kas_bank_model extends CI_Model{
 		$query = $this->db->query('select @s:=0;');	
 		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas_bank join user on kas_bank.id_user = user.id_user where kas_bank.tanggal between '".$data['tanggalawal']."' and '".$data['tanggalakhir']."' and kas_bank.jenis_kas=".$data['jenis_kas']." and kas_bank.idunit=".$data['unit']." and kas_bank.tahunpelajaran='".$data['tahunpelajaran']."'");
 		return $query->result();
+	}
+
+	function laporan_kas_all_by_id($id_user,$id_kas){		
+		$query = $this->db->query('select @s:=0;');	
+		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas_bank where id_user=".$id_user." and id_kas=".$id_kas."");
+		return $query->result();
+	}
+
+	function delete_kas($id_kas){
+		$this->db->where("id_kas",$id_kas);
+		$this->db->delete("kas_bank");
+		return;
 	}
 }
 

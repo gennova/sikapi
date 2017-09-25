@@ -62,6 +62,12 @@ class Kas_bank_model extends CI_Model{
 		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas_bank join user on kas_bank.id_user = user.id_user where kas_bank.tanggal between '".$data['tanggalawal']."' and '".$data['tanggalakhir']."' and kas_bank.jenis_kas=".$data['jenis_kas']." and kas_bank.idunit=".$data['unit']." and kas_bank.tahunpelajaran='".$data['tahunpelajaran']."'");
 		return $query->result();
 	}
+	
+	function delete_kas($id_kas){
+		$this->db->where("id_kas",$id_kas);
+		$this->db->delete("kas_bank");
+		return;
+	}
 }
 
 //end off class

@@ -26,7 +26,7 @@ $this->view('template/js');
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-      <?php $this->view('template/menu');;?>  
+      <?php $this->view('template/menu_biasa');;?>  
         <ul class="navbar-nav sidenav-toggler">
           <li class="nav-item">
             <a class="nav-link text-center" id="sidenavToggler">
@@ -82,7 +82,7 @@ $this->view('template/js');
           <li class="breadcrumb-item active">Selamat Datang <?php echo $this->session->userdata('nama_user');?></li>          
         </ol>
         <!-- <span><button onclick="myfunction()">PROCEED</button></span> -->
-        MENAMBAHKAN DATA KAS
+        <strong><p style="background:cyan" align="center">DAFTAR KAS/BANK</p></strong>
         <?php echo form_open('unit/kas_bank/update',array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
        <?php echo validation_errors(); ?>
         <table>

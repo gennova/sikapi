@@ -10,6 +10,11 @@ class Kas_model extends CI_Model{
 		$this->db->insert('kas',$data);
 		return;
 	}
+	function update_data($data,$id_kas){
+		$this->db->where('id_kas',$id_kas);
+		$this->db->update('kas',$data);
+		return;
+	}
 
 	function get_all_unit(){
 		$this->db->select("*");
@@ -52,6 +57,17 @@ class Kas_model extends CI_Model{
 		$query = $this->db->query('select @s:=0;');	
 		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas where id_user=".$id_user."");
 		return $query->result();
+	}
+	function laporan_kas_all_by_id($id_user,$id_kas){		
+		$query = $this->db->query('select @s:=0;');	
+		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas where id_user=".$id_user." and id_kas=".$id_kas."");
+		return $query->result();
+	}
+
+	function delete_kas($id_kas){
+		$this->db->where("id_kas",$id_kas);
+		$this->db->delete("kas");
+		return;
 	}
 }
 

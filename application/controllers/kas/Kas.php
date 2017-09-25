@@ -63,6 +63,28 @@ class Kas extends CI_Controller{
         $this->m_pdf->pdf->Output($pdfFilePath, "D");        
     }
 
+  function delete_kas_unit_by_id($id_kas){
+    $this->load->model('unit/Kas_model');
+    $this->Kas_model->delete_kas($id_kas);
+    redirect('kas/kas'); 
+  }
+
+  function update_kas_unit_by_id($id_kas){
+    if($query = $this->Kas_model->get_jenis_kas()) {
+      $data['daftarkas'] = $query;
+    }
+    else {
+      $data['daftarkas'] = NULL;
+    }
+    if($query = $this->Kas_model->get_all_unit()) {
+      $data['units'] = $query;
+    }
+    else {
+      $data['units'] = NULL;
+    }
+      $this->load->view('kas/buku_kas',$data); 
+  }
+
 
   function update(){
     //$this->Kas_model->set_s();

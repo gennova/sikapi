@@ -77,7 +77,7 @@ $this->view('template/js');
           </li>
           <li class="breadcrumb-item active"><?php echo 'Selamat datang '.$this->session->userdata('nama_user');?></li>          
         </ol>
-        MENAMBAHKAN DATA KAS
+         <strong><p style="background:magenta" align="center">MENAMBAHKAN DATA KAS</p></strong>
         <?php echo form_open('unit/kas/add_proc',array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
        <?php echo validation_errors(); ?>
         <table>

@@ -80,7 +80,7 @@ $this->view('template/js');
           </li>
           <li class="breadcrumb-item active"><?php echo 'Selamat datang '.$this->session->userdata('nama_user');?></li>          
         </ol>
-        MENAMBAHKAN DATA KAS
+         <strong><p style="background:orange" align="center">MENAMBAHKAN DATA KAS/BANK</p></strong>
         <?php echo form_open('unit/kas_bank/add_proc',array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
        <?php echo validation_errors(); ?>
         <table>

@@ -1,6 +1,6 @@
 <ul class="navbar-nav navbar-sidenav">
           <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Dashboard">
-            <a class="nav-link" href="<?php echo base_url('welcome');?>">
+            <a class="nav-link" href="<?php echo base_url();?>unit/kas">
               <i class="fa fa-fw fa-dashboard"></i>
               <span class="nav-link-text">
                 Dashboard</span>

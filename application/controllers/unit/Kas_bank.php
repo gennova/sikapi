@@ -26,9 +26,38 @@ class Kas_bank extends CI_Controller{
       $this->load->view('unit/buku_kas_bank',$data);
   }
 
+  function delete_kas_bank_unit_by_id($id_kas){
+    $this->load->model('unit/Kas_bank_model');
+    $this->Kas_bank_model->delete_kas($id_kas);
+    redirect('unit/kas_bank'); 
+  }
+
+  function update_kas_unit_by_id($id_kas){
+    $this->load->model('unit/Kas_bank_model');  
+    if($query = $this->Kas_bank_model->get_jenis_kas()) {
+      $data['daftarkas'] = $query;
+    }
+    else {
+      $data['daftarkas'] = NULL;
+    }
+    if($query = $this->Kas_bank_model->get_all_unit()) {
+      $data['units'] = $query;
+    }
+    else {
+      $data['units'] = NULL;
+    }
+    if($query = $this->Kas_bank_model->laporan_kas_all_by_id($this->session->userdata('id_user'),$id_kas)){
+      $data['allkas'] = $query;
+    }else{
+      $data['allkas'] = NULL;
+    }
+    $this->load->view('unit/buku_kas_bank_update',$data);
+  }
+
   function update(){
     //$this->Kas_model->set_s();
     $idunit;
+    $id_kas = $this->input->post('idjeniskas');
     $query = $this->Kas_bank_model->get_user_unit($this->session->userdata('id_user'));
     foreach ($query as $row) {
       $idunit = $row->idunit;
@@ -61,11 +90,22 @@ class Kas_bank extends CI_Controller{
     }
     else {
       $data['kasnya'] = NULL;
+    }
+    if($query = $this->Kas_bank_model->get_bank_kas_id_kas($id_kas)){
+      $data['bank'] = $query;
+    }else{
+      $data['bank'] = NULL;
     }    
     $data['params'] =$dataparams;
     $this->load->view('unit/laporan_kas_bank',$data);
     //echo $this->session->userdata('id_user');
     //echo 'ID UNIT '.$idunit;
+  }
+
+  function delete_kas_unit_by_id($id_kas){
+    $this->load->model('unit/Kas_bank_model');
+    $this->Kas_bank_model->delete_kas($id_kas);
+    redirect('unit/kas'); 
   }
 
   function daftar_kas_con(){
@@ -145,6 +185,55 @@ class Kas_bank extends CI_Controller{
         );
       
       $this->Kas_bank_model->add_data($data);
+      redirect('unit/kas');
+    }
+
+      function update_proc($id_kas){
+    $this->load->library('form_validation');
+    $this->form_validation->set_message('required', '%s Harus Diisi.');
+    //$this->form_validation->set_message('matches', 'Password dan Konfirmasi Password harus sama.');
+    //$this->form_validation->set_message('is_unique', 'Username sudah ada.');
+
+    $this->form_validation->set_rules('nomor', 'Nomor', 'required');
+    $this->form_validation->set_rules('nobt','Nomor BT', 'required');
+    //$this->form_validation->set_rules('uraian','Username', 'required|is_unique[user.username]');
+    $this->form_validation->set_rules('uraian', 'Uraian', 'required');
+    //$this->form_validation->set_rules('password2', 'Konfirmasi Password', 'required|matches[password]');
+    //$this->form_validation->set_rules('transak', 'Debit', 'required');
+    $this->form_validation->set_rules('nominal', 'Nominal', 'required');
+    $this->form_validation->set_rules('tahunpelajaran', 'Tahun Pelajaran', 'required');
+    $this->form_validation->set_rules('namabank', 'Nama Bank', 'required');
+    $this->form_validation->set_rules('rekening', 'Rekening Bank', 'required');
+    if ($this->form_validation->run() == FALSE) {
+      $this->add();
+    }
+    else {
+      $tgl_input = date("Y-m-d");
+      //echo "ID USERRRRRRRRRRRRRRRRRR". $tgl_input;
+      $idunit;
+      if($query = $this->Kas_bank_model->get_user_unit($this->session->userdata('id_user'))) {
+         foreach ($query as $row) {
+               $idunit=$row->idunit;
+             }    
+      }      
+    }    
+      $data = array(
+        'id_user' => $this->session->userdata('id_user'),
+        'tanggal' => $this->input->post('tanggal'),
+        'nomor' => $this->input->post('nomor'),
+        'uraian' => $this->input->post('uraian'),
+        'no_bt' => $this->input->post('nobt'),
+        'transaksi' => $this->input->post('transaksi'),
+        'nominal' => $this->input->post('nominal'),
+        'tgl_input' => $tgl_input,   
+        'jenis_kas' => $this->input->post('idjeniskas'),
+        'tahunpelajaran' => $this->input->post('tahunpelajaran'),  
+        'nama_bank' =>$this->input->post('namabank'),
+        'no_rekening' => $this->input->post('rekening'),
+        'idunit'  =>$idunit,  
+        );
+      
+      $this->Kas_bank_model->update_data($data,$id_kas);
       redirect('unit/kas');
     }
   }

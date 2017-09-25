@@ -7,11 +7,10 @@
   <script>
   $( function() {
     $( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    
-    $( "#datepicker2" ).datepicker({ dateFormat: 'yy-mm-dd' });  
   });
   </script>
 <?php 
-if(!$this->session->userdata('logged_in') && $this->session->userdata('level') != 1){
+if(!$this->session->userdata('logged_in') && $this->session->userdata('level') != 4){
       redirect('login', 'refresh');
     }
 $this->view('template/head');
@@ -26,7 +25,7 @@ $this->view('template/js');
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-      <?php $this->view('template/menu_biasa');?>  
+      <?php $this->view('template/menu_biasa');;?>  
         <ul class="navbar-nav sidenav-toggler">
           <li class="nav-item">
             <a class="nav-link text-center" id="sidenavToggler">
@@ -79,29 +78,22 @@ $this->view('template/js');
           <li class="breadcrumb-item">
             <a href="#">Dashboard</a>            
           </li>
-          <li class="breadcrumb-item active">Selamat Datang <?php echo $this->session->userdata('nama_user');?></li>          
+          <li class="breadcrumb-item active"><?php echo 'Selamat datang '.$this->session->userdata('nama_user');?></li>          
         </ol>
-        <!-- <span><button onclick="myfunction()">PROCEED</button></span> -->
-        <strong><p style="background:yellow" align="center">DAFTAR KAS</p></strong>
-        <?php echo form_open('unit/kas/update',array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
+        <?php 
+        foreach ($allkas as $rowkas) {
+        ?>
+         <strong><p style="background:blue;color:white" align="center">PERUBAHAN DATA KAS/BANK</p></strong>
+        <?php echo form_open('unit/kas_bank/update_proc/'.$rowkas->id_kas,array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
        <?php echo validation_errors(); ?>
         <table>
         <tr><td><div class="form-group">
-            <label for="tanggal">Tanggal Awal</label>
+            <label for="tanggal">Tanggal</label>
             <div>
-              <input type="text" id="datepicker" name='tanggalawal'>
+              <input type="text" id="datepicker" name='tanggal' value="<?php echo $rowkas->tanggal; ?>">
             </div>
             </div>
             </td>
-            <td><div class="form-group">
-            <label for="tanggal">Tanggal Akhir</label>
-            <div>
-              <input type="text" id="datepicker2" name='tanggalakhir'>
-            </div>
-            </div>
-            </td>
-            </tr></table>
-            <table><tr>
             <td><div class="form-group">
             <label for="jeniskas">Jenis Kas</label>
             <div>
@@ -110,7 +102,12 @@ $this->view('template/js');
            <?php 
            foreach($daftarkas as $jeniskas)
             { 
-                echo '<option value="'.$jeniskas->id.'">'.$jeniskas->nama_jenis_kas.'</option>';
+            $kasnya = $rowkas->jenis_kas;
+            if($jeniskas->id==$kasnya){
+              echo '<option value="'.$jeniskas->id.'" selected>'.$jeniskas->nama_jenis_kas.'</option>';
+            }else {
+              echo '<option value="'.$jeniskas->id.'">'.$jeniskas->nama_jenis_kas.'</option>';
+            }                
             } ?>
             </select>
             </div>
@@ -119,20 +116,78 @@ $this->view('template/js');
             </tr>
             <tr>
             <td><div class="form-group">
-            <label for="tahunajaran">Tahun Pelajaran</label>
-            <div>
-              <select class="form-control" name="tahunajaran" onchange="change(this)">
-           <?php 
-           foreach($tahuns as $tahunajaran)
-            { 
-                echo '<option value="'.$tahunajaran->tahunpelajaran.'">'.$tahunajaran->tahunpelajaran.'</option>';
-            } ?>
+            <label for="nomor">Nomor</label>
+            <?php
+            $data = array('name' => 'nomor', 'id' => 'nomor', 'class' => 'form-control', 'placeholder' => 'Masukkan Nomor','value'=>$rowkas->nomor);
+           echo form_input($data); ?>
+                </div>
+            </td>
+            <td width=600><div class="form-group">
+            <label for="uraian">Uraian</label>
+            <?php
+            $data = array('name' => 'uraian', 'id' => 'uraian', 'class' => 'form-control', 'placeholder' => 'Masukkan Uraian','value'=>$rowkas->uraian);
+           echo form_input($data); ?>
+                </div>
+            </td>
+        </tr>
+        <tr>
+        <td><div class="form-group">
+            <label for="nobt">Nomor Bt.</label>
+            <?php
+            $data = array('name' => 'nobt', 'id' => 'nobt', 'class' => 'form-control', 'placeholder' => 'Masukkan No.Bt','value'=>$rowkas->no_bt);
+           echo form_input($data); ?>
+                </div>
+            </td>
+            <td><div class="form-group">
+            <label for="namabank">Nama bank</label>
+            <?php
+            $data = array('name' => 'namabank', 'id' => 'namabank', 'class' => 'form-control', 'placeholder' => 'Masukkan Nama Bank','value'=>$rowkas->nama_bank);
+           echo form_input($data); ?>
+                </div>
+            </td>
+            </tr>
+        <tr>
+        <td><div class="form-group">
+            <label for="transaksi">Jenis Transaksi</label>
+            <select class="form-control" name="transaksi" onchange="change(this)">
+            <?php
+            $transaksi = $rowkas->transaksi;
+            if($transaksi=='debet'){
+              echo ' <option value="debet">DEBET</option>';
+            }else {
+              echo '<option value="kredit">KREDIT</option>'; 
+            }
+            ?>
             </select>
-            </div>
-            </div>
+                </div>
+            </td>
+            </td>
+            <td><div class="form-group">
+            <label for="rekening">Nomor Rekening Bank</label>
+            <?php
+            $data = array('name' => 'rekening', 'id' => 'rekening', 'class' => 'form-control', 'placeholder' => 'Masukkan Rekening Bank','value'=>$rowkas->no_rekening);
+           echo form_input($data); ?>
+                </div>
             </td>
             </tr>
             <tr>
+        <td><div class="form-group">
+            <label for="nominal">Nominal</label>
+            <?php
+            $data = array('name' => 'nominal', 'id' => 'nominal', 'class' => 'form-control', 'placeholder' => 'Masukkan Nominal','value'=>$rowkas->nominal);
+           echo form_input($data); ?>
+                </div>
+            </td>
+        </tr>
+            <tr>
+        <td><div class="form-group">
+            <label for="tahunpelajaran">Tahun Pelajaran</label>
+            <?php
+            $data = array('name' => 'tahunpelajaran', 'id' => 'tahunpelajaran', 'class' => 'form-control', 'placeholder' => 'Masukkan Tahun Pelajaran','value'=>$rowkas->tahunpelajaran);
+           echo form_input($data); ?>
+                </div>
+            </td>
+        </tr>
         </table>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
@@ -140,8 +195,13 @@ $this->view('template/js');
             <button type="reset" class="btn btn-warning">Reset</button>
           </div>
         </div>
-       <?php echo form_close(); ?>
-       
+       <?php echo form_close(); } ?>
+          </div>
+          </div>
+          <div class="card-footer small text-muted">
+            Updated yesterday at 11:59 PM
+          </div>
+        </div>
 
       </div>
       <!-- /.container-fluid -->
@@ -180,8 +240,3 @@ $this->view('template/js');
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript">
-  function myfunction(){
-    window.location = '<?php echo base_url("kas/kas/update");?>';
-  }
-</script>

@@ -43,7 +43,7 @@ class Kas_bank extends CI_Controller{
       $data['units'] = NULL;
     }
 
-    if($query = $this->Kas_bank_model->get_jenis_kas_byid($this->input->post('idjeniskas'))) {
+    if($query = $this->Kas_bank_model->get_jenis_kas_by_id($this->input->post('idjeniskas'))) {
       $data['jeniskass'] = $query;
     }
     else {
@@ -81,6 +81,65 @@ class Kas_bank extends CI_Controller{
     }
     $this->load->view('kas/daftar_kas_bank',$data);
   }
+
+  function daftar_kas_bank_print(){
+    if($query = $this->Kas_bank_model->get_jenis_kas()) {
+      $data['daftarkas'] = $query;
+    }
+    else {
+      $data['daftarkas'] = NULL;
+    }
+    if($query = $this->Kas_bank_model->get_all_unit()) {
+      $data['units'] = $query;
+    }
+    else {
+      $data['units'] = NULL;
+    }
+    if($query = $this->Kas_bank_model->get_tahun_ajaran()) {
+      $data['tahuns'] = $query;
+    }
+    else {
+      $data['tahuns'] = NULL;
+    }
+    $this->load->view('kas/kas_bank_print',$data);
+  }
+
+  function printing(){
+    $dataparams = array(
+        'id_user' => $this->session->userdata('id_user'),
+        'tanggalawal' => $this->input->post('tanggalawal'),
+        'tanggalakhir' => $this->input->post('tanggalakhir'),
+        'jenis_kas' => $this->input->post('idjeniskas'),
+        'unit' => $this->input->post('unit'),
+        'tahunpelajaran' => $this->input->post('tahunajaran'), 
+        );
+    $jeniskas = $this->Kas_bank_model->get_jenis_kas_by_id($this->input->post('idjeniskas'));
+    $query = $this->Kas_bank_model->get_unit_by_id($this->input->post('unit'));
+    $data['jeniskas']=$jeniskas;
+    $data['params'] = $dataparams;
+    $data['userunits'] = $query;
+    if($query = $this->Kas_bank_model->laporan_kas($dataparams)) {
+      $data['kasnya'] = $query;
+    }
+    else {
+      $data['kasnya'] = NULL;
+    } 
+    //$data = []; //disable ori
+        //load the view and saved it into $html variable
+        $html=$this->load->view('kas/print_kas_bank', $data, true);
+ 
+        //this the the PDF filename that user will get to download
+        $pdfFilePath = "LAPORAN_BUKU_KAS_BANK.pdf";
+ 
+        //load mPDF library
+        $this->load->library('m_pdf');
+ 
+       //generate the PDF from the given html
+        $this->m_pdf->pdf->WriteHTML($html);
+ 
+        //download it.
+        $this->m_pdf->pdf->Output($pdfFilePath, "D");        
+    }
 
   function add(){
     if($query = $this->Kas_bank_model->get_jenis_kas()) {

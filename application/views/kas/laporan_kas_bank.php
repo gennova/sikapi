@@ -79,11 +79,12 @@ $this->view('template/js');
           </div> 
           <table>
           <tr><td>Kas </td><td>: </td><td><?php foreach($jeniskass as $kas){
-            echo $kas->nama_jenis_kas;
-            }?></td><td>Nama Bank</td><td>:</td></tr>
+            echo $kas->nama_jenis_kas;}?></td>
+          <td>Nama Bank</td><td>:</td></tr>
           <tr><td>Nama Unit </td><td>:</td><td><?php foreach($units as $unit){
             echo $unit->namaunit;
-            }?>  </td><td>Nomor Rekening</td><td>:</td>
+            }?>  </td><td>Nomor Rekening</td><td>:</td><td><?php foreach($kasnya as $kas){
+            echo $kas->no_rekening;}?></td>
             </tr>
             <tr><td>Per Tanggal </td><td>: </td><td><?php echo $params['tanggalawal'].' sampai '. $params['tanggalawal'];?></td></tr>
             </table>  
@@ -102,6 +103,7 @@ $this->view('template/js');
                     <th>Debit</th>
                     <th>Kredit</th>
                     <th>Saldo</th>
+                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,6 +120,7 @@ $this->view('template/js');
                     <td><?php echo $kas->Debet; ?></td>
                     <td><?php echo $kas->Kredit; ?></td>
                     <td><?php echo $kas->Saldo; ?></td>
+                    <td><a href="<?php echo base_url().'kas/kas_bank/delete_kas_unit_by_id/'.$kas->id_kas; ?>">DELETE</a></td>
                   </tr>
              <?php
              $i++;

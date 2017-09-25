@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    
+    $( "#datepicker2" ).datepicker({ dateFormat: 'yy-mm-dd' });  
+  });
+  </script>
 <?php 
-if(!$this->session->userdata('logged_in') && $this->session->userdata('level') != 4){
+if(!$this->session->userdata('logged_in') && $this->session->userdata('level') != 1){
       redirect('login', 'refresh');
     }
 $this->view('template/head');
@@ -11,12 +21,12 @@ $this->view('template/js');
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-      <a class="navbar-brand" href="#">Halaman Bendahara Unit</a>
+      <a class="navbar-brand" href="#">Halaman Administrator</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
-      <?php $this->view('template/menu_biasa');?>  
+      <?php $this->view('template/menu');;?>  
         <ul class="navbar-nav sidenav-toggler">
           <li class="nav-item">
             <a class="nav-link text-center" id="sidenavToggler">
@@ -38,7 +48,7 @@ $this->view('template/js');
             </a>
             <?php //include('template/message.php');?>
           </li>
-          <?php $this->view('template/notif');?>
+          <?php $this->view('template/notif');;?>
           <li class="nav-item">
             <form class="form-inline my-2 my-lg-0 mr-lg-2">
               <div class="input-group">
@@ -71,73 +81,84 @@ $this->view('template/js');
           </li>
           <li class="breadcrumb-item active">My Dashboard</li>          
         </ol>
-        <!-- Example Tables Card -->
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fa fa-table"></i>
-            Data Tabel Kas/Bank
-          </div> 
-          <table>
-          <tr><td>Kas </td><td>: </td><td><?php foreach($jeniskass as $kas){
-            foreach ($bank as $rowb) {
-            echo $kas->nama_jenis_kas;
-            ?></td><td>Nama Bank</td><td>:</td><td><?php echo $rowb->nama_bank; ?></td></tr>
-          <tr><td>Nama Unit </td><td>:</td><td><?php foreach($units as $unit){
-            echo $unit->namaunit;
-            }?>  </td><td>Nomor Rekening</td><td>:</td><td><?php echo $rowb->no_rekening; ?></td>
-            </tr>
-            <?php }}?>
-            <tr><td>Per Tanggal </td><td>: </td><td><?php echo $params['tanggalawal'].' sampai '. $params['tanggalawal'];?></td></tr>
-            </table>  
-               
-          <div class="card-body">
-            <div class="table-responsive">
-            
-              <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Nomor</th>                    
-                    <th>Uraian</th>
-                    <th>No. Bt.</th>
-                    <th>Debit</th>
-                    <th>Kredit</th>
-                    <th>Saldo</th>
-                    <th>Update</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-            <?php $i =1; if(!empty($kasnya)) {
-            $this->load->helper('fungsidate'); //kita load helper yang kita buat cukup
-            foreach($kasnya as $kas) : { 
-            ?>
-                  <tr>
-                    <td><?php echo $i;?></td>                    
-                    <td><?php echo tgl_indo($kas->tanggal); ?></td>
-                    <td><?php echo $kas->nomor; ?></td>
-                    <td><?php echo $kas->uraian; ?></td>
-                    <td><?php echo $kas->no_bt; ?></td>
-                    <td><?php echo $kas->Debet; ?></td>
-                    <td><?php echo $kas->Kredit; ?></td>
-                    <td><?php echo $kas->Saldo; ?></td>
-                    <td><a href="<?php echo base_url().'unit/kas_bank/update_kas_unit_by_id/'.$kas->id_kas; ?>">UPDATE</a></td>
-                    <td><a href="<?php echo base_url().'unit/kas_bank/delete_kas_unit_by_id/'.$kas->id_kas; ?>">DELETE</a></td>
-                  </tr>
-             <?php
-             $i++;
-              } endforeach;}
-              ?>      
-                </tbody>
-              </table>
-             
+        <!-- <span><button onclick="myfunction()">PROCEED</button></span> -->
+        <center><h3>SILAHKAN ISI DATA DETAIL KAS/BANK</h3></center>
+        <br/>
+        <?php echo form_open('kas/kas_bank/printing',array('id' => 'tambah','name' => 'tambah', 'class' => 'form-horizontal')); ?>
+       <?php echo validation_errors(); ?>
+        <table>
+        <tr><td><div class="form-group">
+            <label for="tanggal">Tanggal Awal</label>
+            <div>
+              <input type="text" id="datepicker" name='tanggalawal'>
             </div>
-          </div>
-          <div class="card-footer small text-muted">
-            Updated yesterday at 11:59 PM
+            </div>
+            </td>
+            <td><div class="form-group">
+            <label for="tanggal">Tanggal Akhir</label>
+            <div>
+              <input type="text" id="datepicker2" name='tanggalakhir'>
+            </div>
+            </div>
+            </td>
+            </tr></table>
+            <table><tr>
+            <td><div class="form-group">
+            <label for="jeniskas">Jenis Kas</label>
+            <div>
+              <select class="form-control" name="idjeniskas" onchange="change(this)">
+            <option value="">--- Pilih Jenis Kas ---</option>
+           <?php 
+           foreach($daftarkas as $jeniskas)
+            { 
+                echo '<option value="'.$jeniskas->id.'">'.$jeniskas->nama_jenis_kas.'</option>';
+            } ?>
+            </select>
+            </div>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            <td><div class="form-group">
+            <label for="unit">Unit</label>
+            <div>
+              <select class="form-control" name="unit" onchange="change(this)">
+           <?php 
+           foreach($units as $unit)
+            { 
+                echo '<option value="'.$unit->id.'">'.$unit->namaunit.'</option>';
+            } ?>
+            </select>
+            </div>
+            </div>
+            </td>
+            </tr>
+            <tr>
+            <tr>
+            <td><div class="form-group">
+            <label for="tahunajaran">Tahun Pelajaran</label>
+            <div>
+              <select class="form-control" name="tahunajaran" onchange="change(this)">
+           <?php 
+           foreach($tahuns as $tahunajaran)
+            { 
+                echo '<option value="'.$tahunajaran->tahunpelajaran.'">'.$tahunajaran->tahunpelajaran.'</option>';
+            } ?>
+            </select>
+            </div>
+            </div>
+            </td>
+            </tr>
+            <tr>
+        </table>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" name="terkirim" class="btn btn-primary" value="1">Kirim</button>
+            <button type="reset" class="btn btn-warning">Reset</button>
           </div>
         </div>
+       <?php echo form_close(); ?>
+       
 
       </div>
       <!-- /.container-fluid -->
@@ -172,7 +193,10 @@ $this->view('template/js');
     </div>
   </body>
 </html>
-
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
   function myfunction(){
     window.location = '<?php echo base_url("kas/kas/update");?>';

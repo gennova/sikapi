@@ -68,6 +68,12 @@ class Kas_model extends CI_Model{
 		$query = $this->db->query("SELECT *, @k:=IF(transaksi='kredit',nominal,0) AS Kredit,@d:=IF(transaksi='debet',nominal,0) AS Debet , @s:=@s+@d-@k AS Saldo FROM kas join user on kas.id_user = user.id_user join unit on user.idunit=unit.id");
 		return $query->result();
 	}
+
+	function delete_kas($id_kas){
+		$this->db->where("id_kas",$id_kas);
+		$this->db->delete("kas");
+		return;
+	}
 }
 
 //end off class

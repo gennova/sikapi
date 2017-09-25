@@ -56,7 +56,7 @@
                     <a href="<?php echo base_url('kas/kas/daftar_kas_print'); ?>">Print Kas</a>
                   </li>
                   <li>
-                    <a href="#">Print Kas/Bank</a>
+                    <a href="<?php echo base_url('kas/kas_bank/daftar_kas_bank_print'); ?>">Print Kas/Bank</a>
                   </li>
                 </ul>
               </li>
